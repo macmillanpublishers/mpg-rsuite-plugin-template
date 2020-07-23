@@ -1,0 +1,1 @@
+# rsuite-plugin-template
