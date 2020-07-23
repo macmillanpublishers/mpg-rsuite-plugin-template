@@ -1,0 +1,31 @@
+<rsuite-plugin id="mpg-rsuite-example" version="^timestamp^" description="Example RSuite plugin">
+
+	<extensionProvider id="rsuite.WebService">
+
+		<remoteApiDefinition id="mpgtest:webservice.echo" handler="com.macmillan.rsuite.example.webservice.EchoWebService" />
+
+	</extensionProvider>
+
+	<extensionProvider id="rsuite.ContextMenu">
+
+		<contextMenuRuleSet name="exampleMenus" scope="system">
+			<menuItemList>
+				<menuItem id="mpgtest.echoService">
+					<actionName>rsuite:invokeWebservice</actionName>
+					<label>Test Echo</label>
+					<property name="remoteApiName" value="mpgtest:webservice.echo" />
+					<property name="serviceParams.param1" value="ABC" />
+					<property name="serviceParams.param2" value="123" />
+					<property name="showProgressMeter" value="true" />
+					<property name="timeout" value="0" />
+					<property name="rsuite:path" value="Test" />
+				</menuItem>
+			</menuItemList>
+			<ruleList>
+				<rule>include role RSuiteAdministrator</rule>
+			</ruleList>
+		</contextMenuRuleSet>
+
+	</extensionProvider>
+
+</rsuite-plugin>

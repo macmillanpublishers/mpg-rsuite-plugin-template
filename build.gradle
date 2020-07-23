@@ -1,0 +1,59 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
+
+apply from: 'http://ivy.reallysi.com/ivy-repo/orbis-std.gradle'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    maven {
+        url "http://gradle.artifactoryonline.com/gradle/libs"    //added to resolve jms 1.1
+    }
+    mavenCentral()
+}
+
+configurations {
+    includeInJar
+}
+
+ext {
+    basename = 'mpg-rsuite-plugin-example'
+}
+
+dependencies {
+
+    configurations.compile.extendsFrom(configurations.includeInJar)
+
+    compile('rsi:rsuite-api:5.5.3') {
+        transitive = false
+    }
+
+}
+
+jar {
+    from {
+        configurations.includeInJar.collect { it }
+    }
+
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/macmillanpublishers/mpg-rsuite-plugin-example")
+            credentials {
+                username = project.findProperty("gpr.user") ?: System.getenv("GITHUB_ACTOR")
+                password = project.findProperty("gpr.key") ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+    publications {
+        gpr(MavenPublication) {
+            from(components.java)
+        }
+    }
+}
