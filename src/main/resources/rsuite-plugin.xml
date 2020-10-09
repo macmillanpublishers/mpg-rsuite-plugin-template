@@ -1,4 +1,4 @@
-<rsuite-plugin id="mpg-rsuite-example" version="^timestamp^" description="Example RSuite plugin">
+<rsuite-plugin id="mpg-rsuite-example" version="@PLUGIN_VERSION@" description="Example RSuite plugin">
 
 	<extensionProvider id="rsuite.WebService">
 

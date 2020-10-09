@@ -1,3 +1,9 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id "org.springframework.boot" version "1.5.22.RELEASE"
+}
+
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'eclipse'
@@ -9,10 +15,15 @@ sourceCompatibility = 1.8
 
 repositories {
     mavenLocal()
-    maven {
-        url "http://gradle.artifactoryonline.com/gradle/libs"    //added to resolve jms 1.1
-    }
     mavenCentral()
+    maven {
+        name = "GitHubPackages"
+        url = uri("https://maven.pkg.github.com/macmillanpublishers/macmillan_rsuite")
+        credentials {
+            username = project.findProperty("gpr.rsuite.user") ?: System.getenv("GITHUB_RSUITE_ACTOR")
+            password = project.findProperty("gpr.rsuite.key") ?: System.getenv("GITHUB_RSUITE_TOKEN")
+        }
+    }
 }
 
 configurations {
@@ -30,14 +41,34 @@ dependencies {
     compile('rsi:rsuite-api:5.5.3') {
         transitive = false
     }
+    compile group: 'commons-logging', name: 'commons-logging', version: '1.1.1'
 
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+
+    includeInJar("com.macmillanpublishers:mpg-utils:0.0.1")
 }
+
+if (!project.hasProperty("profile")) {
+    ext.profile = "local"
+}
+
+processResources{
+    filter ReplaceTokens, tokens:[PLUGIN_VERSION: project.getVersion().toString()]
+}
+
+task createUnitTestWar(type : War){
+    destinationDirectory = file("$buildDir/reports")
+    archiveFileName = "$project.name-unit-test-results.war"
+    archiveVersion = ""
+    from("target/reports/tests/test")
+}
+
+test.finalizedBy createUnitTestWar
 
 jar {
     from {
         configurations.includeInJar.collect { it }
     }
-
 }
 
 publishing {

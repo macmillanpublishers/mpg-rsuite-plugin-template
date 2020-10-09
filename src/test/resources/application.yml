@@ -1,0 +1,4 @@
+logging:
+  level:
+    ROOT: INFO
+    com.macmillan.rsuite.example.tdd.tests: DEBUG
