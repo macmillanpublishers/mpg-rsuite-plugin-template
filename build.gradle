@@ -11,6 +11,8 @@ apply plugin: 'maven-publish'
 
 apply from: 'http://ivy.reallysi.com/ivy-repo/orbis-std.gradle'
 
+group="com.macmillanpublishers"
+
 sourceCompatibility = 1.8
 
 repositories {
@@ -30,10 +32,6 @@ configurations {
     includeInJar
 }
 
-ext {
-    basename = 'mpg-rsuite-plugin-example'
-}
-
 dependencies {
 
     configurations.compile.extendsFrom(configurations.includeInJar)
@@ -50,6 +48,10 @@ dependencies {
 
 if (!project.hasProperty("profile")) {
     ext.profile = "local"
+}
+
+bootRepackage {
+    enabled = false
 }
 
 processResources{
